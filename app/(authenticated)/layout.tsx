@@ -6,7 +6,7 @@ export default async function AuthenticatedLayout({ children }: {
 }) {
   await useProtected();
   return (
-    <div className="flex flex-1 w-full flex-col">
+    <div className="flex flex-1 w-full flex-col items-center">
       <Header />
       {children}
     </div>
