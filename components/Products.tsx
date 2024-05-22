@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/
 import { DataTable } from "./ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { Product } from "@/types";
+import { fetchCachedProducts } from "@/api/product";
 
 export const columns: ColumnDef<Product>[] = [
   { accessorKey: "name", header: "Name" },
@@ -12,7 +13,9 @@ export const columns: ColumnDef<Product>[] = [
   { accessorKey: "updated_at", header: "Last Updated" },
 ];
 
-export default function ProductsList() {
+export default async function ProductsList() {
+  const products = await fetchCachedProducts();
+
   return (
     <div className="px-6 w-full">
       <Card className="container mx-auto">
@@ -34,7 +37,7 @@ export default function ProductsList() {
         </CardHeader>
 
         <CardContent>
-          <DataTable columns={columns} data={[]} />
+          <DataTable columns={columns} data={products} />
         </CardContent>
       </Card>
     </div>
