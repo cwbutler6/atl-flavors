@@ -20,3 +20,9 @@ export const signIn = async (formData: FormData) => {
 
   return redirect("/");
 };
+
+export const signOut = async () => {
+  const supabase = createClient();
+  await supabase.auth.signOut();
+  return redirect("/login");
+}

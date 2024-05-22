@@ -1,17 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
-import { DataTable } from "./ui/data-table";
-import { ColumnDef } from "@tanstack/react-table";
-import { Product } from "@/types";
+import { DataTable } from "../ui/data-table";
 import { fetchCachedProducts } from "@/api/product";
-
-export const columns: ColumnDef<Product>[] = [
-  { accessorKey: "name", header: "Name" },
-  { accessorKey: "status", header: "Status" },
-  { accessorKey: "quantity", header: "Quantity" },
-  { accessorKey: "created_by", header: "Created By" },
-  { accessorKey: "updated_at", header: "Last Updated" },
-];
+import AddProduct from "./AddProduct";
+import { columns } from "./columns";
 
 export default async function ProductsList() {
   const products = await fetchCachedProducts();
@@ -30,9 +21,7 @@ export default async function ProductsList() {
           <div className="flex-grow" />
 
           <div>
-            <Button>
-              Add Product
-            </Button>
+            <AddProduct />
           </div>
         </CardHeader>
 
