@@ -5,13 +5,9 @@ export async function useProtected() {
   const supabase = createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
-  console.log(user)
 
-  try {
   if (!user) {
+    console.log("User not authenticated, redirecting to login");
     return redirect("/login");
   }
-} catch (error) {
-  console.error(error)
-}
 }

@@ -1,10 +1,14 @@
-import { useProtected } from "../hooks/useProtected";
+import Header from "@/components/Header";
+import { useProtected } from "@/components/hooks/useProtected";
 
-export default function AuthenticatedLayout({
-  children,
-}: {
+export default async function AuthenticatedLayout({ children }: {
   children: React.ReactNode;
 }) {
-  useProtected();
-  return children;
+  await useProtected();
+  return (
+    <div className="flex flex-1 w-full flex-col">
+      <Header />
+      {children}
+    </div>
+  );
 }
