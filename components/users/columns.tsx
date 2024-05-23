@@ -2,22 +2,15 @@
 
 import { Product } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { Archive, MoreHorizontal, Pencil } from "lucide-react"
+import { Archive, MoreHorizontal } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Button, buttonVariants } from "../ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
 import { archiveProduct } from "@/api/product";
 
 export const columns: ColumnDef<Product>[] = [
-  { accessorKey: "name", header: "Name" },
-  { accessorKey: "quantity", header: "Quantity" },
-  { accessorKey: "status", header: "Status" },
-  { accessorKey: "created_by", header: "Created By", cell: ({ row }) =>  row.original.created_by.full_name || row.original.created_by.email },
-  { 
-    accessorKey: "updated_at",
-    header: "Last Updated",
-    cell: ({ row }) => (row.original.updated_at) ? new Date(row.original.updated_at).toLocaleString() : null,
-  },
+  { accessorKey: "full_name", header: "Name" },
+  { accessorKey: "email", header: "Email" },
   {
     id: "actions",
     cell: ({ row }) => {
@@ -30,13 +23,10 @@ export const columns: ColumnDef<Product>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <Pencil size={14} className="mr-2"/> Edit
-            </DropdownMenuItem>
             <DropdownMenuItem onClick={(e) => e.preventDefault()}>
               <AlertDialog>
                 <AlertDialogTrigger className="flex flex-row items-center">
-                  <Archive size={14} className="mr-2" /> Archive
+                  <Archive size={14} className="mr-2" /> Remove User
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>

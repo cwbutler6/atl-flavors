@@ -39,3 +39,17 @@ export async function createProduct(product: FormData) {
 
   return product;
 }
+
+export async function archiveProduct(id: number) {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("products")
+    .update({ status: "archived" })
+    .eq("id", id);
+  if (error) {
+    console.error("Error archiving product", error);
+    throw error;
+  }
+
+  return id;
+}

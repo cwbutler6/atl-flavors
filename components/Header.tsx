@@ -1,18 +1,13 @@
-import LogoutButton from "./buttons/Logout";
 import AppNav from "./AppNav";
 
 export default function Header() {
   return (
-    <div className="flex justify-center items-center p-6 w-full">
+    <header className="flex justify-center items-center p-6 w-full">
       <div className="container flex flex-row items-center">
-        <h1 className="mr-6">ATL Flavors</h1>
-
-        <AppNav />
-
+        <h1 className="mr-6 text-xl">ATL Flavors</h1>
         <div className="flex-grow" />
-
-        <LogoutButton />
+        <AppNav />
       </div>
-    </div>
+    </header>
   );
 }

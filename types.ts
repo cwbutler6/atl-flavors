@@ -1,4 +1,4 @@
-import { Tables } from "./db";
+import { Tables } from "./db.types";
 
 export type User = Tables<"profiles">;
 export type Product = Tables<"products"> & {

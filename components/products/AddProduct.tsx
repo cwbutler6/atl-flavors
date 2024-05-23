@@ -9,33 +9,60 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Button, buttonVariants } from "../ui/button";
-import { Plus, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
+import { useMediaQuery } from 'usehooks-ts';
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
 
 const formSchema = z.object({
-  name: z.string(),
+  name: z.string({ required_error: "Product name is required" }),
   status: z.enum(["in stock", "out of stock"]),
   quantity: z.number().min(0),
 });
 
 export default function AddProduct() {
-  return (
-    <Dialog>
-      <DialogTrigger className={buttonVariants()}>
-        <PlusCircle className="h-4 w-4 mr-1" />
-        Add Product
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader className="mb-2">
-          <DialogTitle>Add Product</DialogTitle>
-          <DialogDescription>
-            Create new product for listing
-          </DialogDescription>
-        </DialogHeader>
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
-        <AddProductForm />
-      </DialogContent>
-    </Dialog>
-  );
+  if (isDesktop) {
+    return (
+      <Dialog>
+        <DialogTrigger className={buttonVariants()}>
+          <PlusCircle className="h-4 w-4 mr-1" />
+          Product
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader className="mb-2">
+            <DialogTitle>Add Product</DialogTitle>
+            <DialogDescription>
+              Create new product for listing
+            </DialogDescription>
+          </DialogHeader>
+
+          <AddProductForm />
+        </DialogContent>
+      </Dialog>
+    );
+  } else {
+    return (
+      <Drawer>
+        <DrawerTrigger className={buttonVariants()}>
+          <PlusCircle className="h-4 w-4 mr-1" />
+          Product
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader className="text-left">
+            <DrawerTitle>Add Product</DrawerTitle>
+            <DrawerDescription>
+              Create new product for listing
+            </DrawerDescription>
+          </DrawerHeader>
+         
+         <div className="p-6">
+          <AddProductForm />
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
 }
 
 function AddProductForm() {
@@ -63,7 +90,7 @@ function AddProductForm() {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Product name" {...field} />
+                <Input placeholder="Product name" {...field} required />
               </FormControl>
               <FormMessage />
             </FormItem>

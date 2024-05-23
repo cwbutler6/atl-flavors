@@ -7,7 +7,6 @@ export default function AppProvider({ children }: PropsWithChildren) {
       attribute="class"
       defaultTheme="system"
       enableSystem
-      disableTransitionOnChange
     >
       {children}
     </ThemeProvider>

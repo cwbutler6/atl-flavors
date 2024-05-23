@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={GeistSans.className}>
-      <body>
+      <body className="overflow-hidden">
         <AppProvider>
           <main className="min-h-screen flex flex-col items-center">
             {children}
