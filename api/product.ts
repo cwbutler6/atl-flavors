@@ -1,5 +1,6 @@
 "use server";
 
+import { ProductInput } from "@/components/products/utils";
 import { Product } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
@@ -9,7 +10,7 @@ export async function fetchProducts() {
   const { data, error } = await supabase.from("products")
     .select("*, created_by(full_name, email)")
     .neq("status", "archived")
-    .order("name", { ascending: true })
+    .order("id", { ascending: true })
     .returns<Product[]>();
 
   if (error) {
@@ -22,15 +23,11 @@ export async function fetchProducts() {
 
 export const fetchCachedProducts = cache(fetchProducts);
 
-export async function createProduct(product: FormData) {
+export async function createProduct(product: ProductInput) {
   const supabase = createClient();
   const { error } = await supabase
     .from("products")
-    .insert({
-      name: product.get("name") as string,
-      status: product.get("status"),
-      quantity: product.get("quantity"),
-    });
+    .insert(product);
 
   if (error) {
     console.error("Error creating product", error);
@@ -40,7 +37,23 @@ export async function createProduct(product: FormData) {
   return product;
 }
 
+export async function updateProduct(id: number, product: Partial<ProductInput>) {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("products")
+    .update(product)
+    .eq("id", id);
+
+  if (error) {
+    console.error("Error updating product", error);
+    throw error;
+  }
+
+  return id;
+}
+
 export async function archiveProduct(id: number) {
+  console.log(id)
   const supabase = createClient();
   const { error } = await supabase
     .from("products")

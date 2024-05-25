@@ -4,60 +4,67 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, Di
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createProduct } from "@/api/product";
+import { archiveProduct, createProduct, updateProduct } from "@/api/product";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Button, buttonVariants } from "../ui/button";
-import { PlusCircle } from "lucide-react";
+import { Archive, PlusCircle } from "lucide-react";
 import { useMediaQuery } from 'usehooks-ts';
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
+import { Product } from "@/types";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import ArchiveProductBtn from "./ArchiveProductBtn";
 
 const formSchema = z.object({
   name: z.string({ required_error: "Product name is required" }),
   status: z.enum(["in stock", "out of stock"]),
-  quantity: z.number().min(0),
+  quantity: z.coerce.number().min(0)
 });
 
-export default function AddProduct() {
+export default function AddProduct({ product, trigger }: { product?: Product, trigger?: React.ReactNode }) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const title = `${(product) ? "Edit ": "Create "} Product`;
+  const description = `${(product) ? "Edit ": "Create new "} product for listing`;
+  const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
 
   if (isDesktop) {
     return (
-      <Dialog>
+      <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
         <DialogTrigger className={buttonVariants()}>
-          <PlusCircle className="h-4 w-4 mr-1" />
-          Product
+          {trigger || "Open"}
         </DialogTrigger>
         <DialogContent>
           <DialogHeader className="mb-2">
-            <DialogTitle>Add Product</DialogTitle>
+            <DialogTitle>{title}</DialogTitle>
             <DialogDescription>
-              Create new product for listing
+              {description}
             </DialogDescription>
           </DialogHeader>
 
-          <AddProductForm />
+          <AddProductForm product={product} close={close} />
         </DialogContent>
       </Dialog>
     );
   } else {
     return (
-      <Drawer>
-        <DrawerTrigger className={buttonVariants()}>
-          <PlusCircle className="h-4 w-4 mr-1" />
-          Product
+      <Drawer open={open} onOpenChange={(open) => setOpen(open)}>
+        <DrawerTrigger>
+          {trigger || "Open"}
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader className="text-left">
-            <DrawerTitle>Add Product</DrawerTitle>
+            <DrawerTitle>{title}</DrawerTitle>
             <DrawerDescription>
-              Create new product for listing
+              {description}
             </DrawerDescription>
           </DrawerHeader>
          
-         <div className="p-6">
-          <AddProductForm />
+          <div className="p-6">
+            <AddProductForm product={product} close={close} />
           </div>
         </DrawerContent>
       </Drawer>
@@ -65,19 +72,22 @@ export default function AddProduct() {
   }
 }
 
-function AddProductForm() {
+function AddProductForm({ product, close }: { product?: Product, close: () => void }) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { name: "", status: "in stock", quantity: 0 },
+    defaultValues: { name: product?.name ?? "", status: (product?.status ?? "in stock") as any, quantity: product?.quantity ?? 0 },
   });
 
   const onCancel = () => {};
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const formData = new FormData();
-    formData.append("name", values.name);
-    formData.append("status", values.status);
-    formData.append("quantity", values.quantity.toString());
-    await createProduct(formData);
+    if (product && product.id) {
+      await updateProduct(product.id, values);
+    } else {
+      await createProduct(values);
+    }
+    router.refresh();
+    close();
   };
 
   return (
@@ -132,15 +142,40 @@ function AddProductForm() {
           )}
         />
 
-        <div className="flex flex-row justify-between mt-4">
+        <div className="flex flex-row mt-4">
           <DialogClose asChild>
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancel
             </Button>
           </DialogClose>
+
+          <div className="flex-grow" />
+
+          {product && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button type="button" variant="destructive" className="mr-2">
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure you want to delete product?</AlertDialogTitle>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <ArchiveProductBtn
+                    id={product.id}
+                    onConfirm={close}
+                    trigger={<AlertDialogAction>Yes</AlertDialogAction>}
+                  />
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
           <Button type="submit">
             <PlusCircle className="h-4 w-4 mr-1" />
-            Add Product
+            {(product) ? "Update" : "Create"}
           </Button>
         </div>
       </form>

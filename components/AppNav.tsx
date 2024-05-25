@@ -40,9 +40,12 @@ export default function AppNav() {
 
 export function AppNavMenu({ vertical }: { vertical?: boolean }) {
   return (
-    <div className={cn("flex", (vertical) ? "flex-col" : "flex-row")}>
+    <div className={cn("flex gap-3", (vertical) ? "flex-col" : "flex-row items-center")}>
       <Link href="/">Products</Link>
       <Link href="/transactions">Transactions</Link>
+      <div className="text-center">
+        <LogoutButton />
+      </div>
     </div>
   );
 }
