@@ -3,7 +3,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "generate:types": "pnpm dlx supabase gen types typescript --local > db.types.ts",
+    "db:pull:local": "pnpm dlx supabase db pull --local",
+    "db:push": "pnpm dlx supabase db push"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.4.2",

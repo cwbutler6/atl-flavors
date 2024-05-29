@@ -34,6 +34,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      customer: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: number
+          notes: string | null
+          phone: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: number
+          notes?: string | null
+          phone: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: number
+          notes?: string | null
+          phone?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           created_at: string
@@ -42,6 +72,7 @@ export type Database = {
           name: string
           quantity: number
           status: Database["public"]["Enums"]["product_status"]
+          type: Database["public"]["Enums"]["product_type"] | null
           updated_at: string | null
           updated_by: string | null
         }
@@ -52,6 +83,7 @@ export type Database = {
           name: string
           quantity?: number
           status?: Database["public"]["Enums"]["product_status"]
+          type?: Database["public"]["Enums"]["product_type"] | null
           updated_at?: string | null
           updated_by?: string | null
         }
@@ -62,6 +94,7 @@ export type Database = {
           name?: string
           quantity?: number
           status?: Database["public"]["Enums"]["product_status"]
+          type?: Database["public"]["Enums"]["product_type"] | null
           updated_at?: string | null
           updated_by?: string | null
         }
@@ -88,6 +121,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          phone: string | null
           updated_at: string | null
           website: string | null
         }
@@ -96,6 +130,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          phone?: string | null
           updated_at?: string | null
           website?: string | null
         }
@@ -104,6 +139,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          phone?: string | null
           updated_at?: string | null
           website?: string | null
         }
@@ -113,6 +149,108 @@ export type Database = {
             columns: ["id"]
             isOneToOne: true
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transaction_items: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: number
+          notes: string | null
+          product_id: number
+          quantity: number | null
+          transaction_id: number
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: number
+          notes?: string | null
+          product_id: number
+          quantity?: number | null
+          transaction_id: number
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: number
+          notes?: string | null
+          product_id?: number
+          quantity?: number | null
+          transaction_id?: number
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transactions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: number
+          id: number
+          provider_id: string | null
+          status: Database["public"]["Enums"]["transaction_status"]
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id: number
+          id?: number
+          provider_id?: string | null
+          status?: Database["public"]["Enums"]["transaction_status"]
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: number
+          id?: number
+          provider_id?: string | null
+          status?: Database["public"]["Enums"]["transaction_status"]
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_provider_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -127,6 +265,7 @@ export type Database = {
     Enums: {
       product_status: "in stock" | "out of stock" | "archived"
       product_type: "mushroom" | "flower"
+      transaction_status: "in progress" | "completed" | "canceled"
     }
     CompositeTypes: {
       [_ in never]: never

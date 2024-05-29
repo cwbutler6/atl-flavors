@@ -53,7 +53,6 @@ export async function updateProduct(id: number, product: Partial<ProductInput>) 
 }
 
 export async function archiveProduct(id: number) {
-  console.log(id)
   const supabase = createClient();
   const { error } = await supabase
     .from("products")

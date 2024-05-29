@@ -4,12 +4,12 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, Di
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { archiveProduct, createProduct, updateProduct } from "@/api/product";
+import { createProduct, updateProduct } from "@/api/product";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Button, buttonVariants } from "../ui/button";
-import { Archive, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { useMediaQuery } from 'usehooks-ts';
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
 import { Product } from "@/types";
@@ -17,12 +17,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ArchiveProductBtn from "./ArchiveProductBtn";
-
-const formSchema = z.object({
-  name: z.string({ required_error: "Product name is required" }),
-  status: z.enum(["in stock", "out of stock"]),
-  quantity: z.coerce.number().min(0)
-});
+import { productFormSchema } from "./utils";
 
 export default function AddProduct({ product, trigger }: { product?: Product, trigger?: React.ReactNode }) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -74,13 +69,18 @@ export default function AddProduct({ product, trigger }: { product?: Product, tr
 
 function AddProductForm({ product, close }: { product?: Product, close: () => void }) {
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { name: product?.name ?? "", status: (product?.status ?? "in stock") as any, quantity: product?.quantity ?? 0 },
+  const form = useForm<z.infer<typeof productFormSchema>>({
+    resolver: zodResolver(productFormSchema),
+    defaultValues: {
+      name: product?.name ?? "",
+      status: (product?.status ?? "in stock") as any,
+      quantity: product?.quantity ?? 0,
+      type: product?.type ?? "flower",
+    },
   });
 
   const onCancel = () => {};
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof productFormSchema>) => {
     if (product && product.id) {
       await updateProduct(product.id, values);
     } else {
@@ -102,6 +102,27 @@ function AddProductForm({ product, close }: { product?: Product, close: () => vo
               <FormControl>
                 <Input placeholder="Product name" {...field} required />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value} required>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="flower">🌳</SelectItem>
+                  <SelectItem value="mushroom">🍄</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

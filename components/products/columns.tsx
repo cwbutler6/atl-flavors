@@ -2,15 +2,13 @@
 
 import { Product } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { Archive, MoreHorizontal, Pencil } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { Button, buttonVariants } from "../ui/button";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
+import { Archive, Pencil } from "lucide-react"
 import ArchiveProductBtn from "./ArchiveProductBtn";
 import AddProduct from "./AddProduct";
 
 export const columns: ColumnDef<Product>[] = [
   { accessorKey: "name", header: "Name" },
+  { accessorKey: "type", header: "Type", cell: ({ row }) => (row.original.type === "flower") ? "🌳" : "🍄" },
   { accessorKey: "quantity", header: "Quantity" },
   { accessorKey: "status", header: "Status" },
   { accessorKey: "created_by", header: "Created By", cell: ({ row }) =>  row.original.created_by.full_name || row.original.created_by.email },

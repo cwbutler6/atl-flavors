@@ -2,11 +2,11 @@
 
 import { usePathname } from "next/navigation";
 import NextLink from "next/link";
-import { NavigationMenu, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from "./ui/navigation-menu";
+import { navigationMenuTriggerStyle } from "./ui/navigation-menu";
 import { cn } from "@/utils/tailwind";
 import LogoutButton from "./buttons/Logout";
 import { Menu as MenuIcon } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 
 const Link = ({ href, ...props }: any) => {
@@ -30,7 +30,13 @@ export default function AppNav() {
         </SheetTrigger>
 
         <SheetContent>
-          <AppNavMenu vertical />
+        <div className={cn("flex gap-3", "flex-col")}>
+          <SheetClose asChild><Link href="/">Products</Link></SheetClose>
+          <SheetClose asChild><Link href="/transactions">Transactions</Link></SheetClose>
+          <div className="text-center">
+            <SheetClose asChild><LogoutButton /></SheetClose>
+          </div>
+        </div>
         </SheetContent>
       </Sheet>
     </>
