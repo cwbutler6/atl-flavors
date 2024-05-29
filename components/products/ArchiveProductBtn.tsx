@@ -5,7 +5,10 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useRouter } from "next/navigation";
 import { buttonVariants } from "../ui/button";
 
-export default function ArchiveProductBtn({ trigger, id, onConfirm }: { trigger?: React.ReactNode, id: number, onConfirm?: () => void }) {
+export default function ArchiveProductBtn(
+  { trigger, id, asChild, onConfirm }:
+  { trigger?: React.ReactNode, id: number, asChild?: boolean; onConfirm?: () => void }
+) {
   const router = useRouter();
   const onDelete = () => async () => {
     await archiveProduct(id);
@@ -15,7 +18,7 @@ export default function ArchiveProductBtn({ trigger, id, onConfirm }: { trigger?
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
+      <AlertDialogTrigger asChild={asChild}>
         {trigger}
       </AlertDialogTrigger>
       <AlertDialogContent>
