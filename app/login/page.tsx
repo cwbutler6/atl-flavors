@@ -22,19 +22,12 @@ export default function Login(
     defaultValues: { email: "", password: "" },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const formData = new FormData();
-    formData.append("email", values.email);
-    formData.append("password", values.password);
-    await signIn(formData);
-  }
-
   return (
     <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2">
       <Form {...form}>
         <form
           className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground"
-          onSubmit={form.handleSubmit(onSubmit)}
+          action={signIn}
         >
           <FormField
             control={form.control}
@@ -43,7 +36,11 @@ export default function Login(
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="you@example.com" {...field} />
+                  <Input
+                    placeholder="you@example.com"
+                    type="email"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -56,7 +53,11 @@ export default function Login(
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="Enter your password" {...field} />
+                  <Input
+                    type="password"
+                    placeholder="Enter your password"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
