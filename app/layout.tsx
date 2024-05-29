@@ -1,7 +1,7 @@
 import { GeistSans } from "geist/font/sans";
-import "./globals.css";
 import AppProvider from "@/components/providers/AppProvider";
 import { Viewport } from "next";
+import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -16,8 +16,6 @@ export const metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export default function RootLayout({

@@ -5,3 +5,11 @@
 @-ms-viewport{
   width: device-width;
 }
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="tel"],
+input[type="password"] {
+  font-size: 1rem;
+}
